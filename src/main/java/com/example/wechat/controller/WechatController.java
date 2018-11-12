@@ -47,13 +47,12 @@ public class WechatController {
     @RequestMapping(value = "/system", method = RequestMethod.POST)
     public void doPost(HttpServletRequest request, HttpServletResponse response){
 
-
         System.out.println("this is post method");
 
         try {
             Map<String, String> map = MessageUtil.xml2Map(request);
             for (Map.Entry<String, String> entry : map.entrySet()) {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                System.out.println("Key=" + entry.getKey() + " | Value=" + entry.getValue());
             }
 
             String msgtype=map.get("MsgType");
@@ -69,7 +68,6 @@ public class WechatController {
             e.printStackTrace();
         }
     }
-
 
     @RequestMapping("/test")
     public String test(){

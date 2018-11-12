@@ -32,13 +32,8 @@ public class MsgDispatcher {
                 //fromUserName is openId
                 QrCodeService.sendQrcodeToUser(Config.ACCESS_TOKEN, fromUserName);
             }
-
-            if(content.equals("二维码")){
-
-            }
-
-            if(content.equals("客服文本")){
-                sendCustomerMsg2();
+            if(content.equals("你好")){
+                sendCustomerMsg(map.get("FromUserName"),"你好!");
             }
 
         }
@@ -60,10 +55,10 @@ public class MsgDispatcher {
         return null;
     }
 
-    private static void sendCustomerMsg2(){
-        String accessToken = "15_aDNMiLLB5cZq6xK77vuU-jFmqLlSFXufRyVzEVhNbISW_7TkFjPabFumOhMe_v25cySV1rl3Cq9TdrkRDcG6U8SNl6sp2F25u2NoQJENdeVHINYd4Md83fKwkVSEzCJCTpykovh2-qjlkadJJIGgADACBZ";
-        String baseUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
-        String param = "{\"touser\":\"o1BWk0utKViGg5DEPeMgk-OrFrOA\",\"msgtype\":\"text\",\"text\":{\"content\":\"customer text message\"}}";
+    // for testing
+    private static void sendCustomerMsg(String openid, String msg){
+        String baseUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+Config.ACCESS_TOKEN;
+        String param = "{\"touser\":\""+openid+"\",\"msgtype\":\"text\",\"text\":{\"content\":\""+msg+"\"}}";
         String result = HttpRequest.sendPost(baseUrl,param);
         System.out.println(result);
     }

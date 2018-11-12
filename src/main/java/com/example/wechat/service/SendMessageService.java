@@ -31,4 +31,14 @@ public class SendMessageService {
         String result = HttpRequest.sendPost(baseUrl,param);
         System.out.println("发送了客服消息"+result);
     }
+
+    //发送文本客服消息
+    public static void sendCustomerTextMsg(String accessToken, String content, String openId){
+        String baseUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
+        String param = "{\"touser\":\""+openId+"\",\"msgtype\":\"text\",\"text\":{\"content\":\""+content+"\"}}";
+        String result = HttpRequest.sendPost(baseUrl,param);
+        System.out.println("发送了客服消息"+result);
+    }
+
+
 }

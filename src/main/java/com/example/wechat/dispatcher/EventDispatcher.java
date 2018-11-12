@@ -3,6 +3,7 @@ package com.example.wechat.dispatcher;
 import com.alibaba.fastjson.JSON;
 import com.example.wechat.msg.TextMessage;
 import com.example.wechat.service.SendMessageService;
+import com.example.wechat.util.Config;
 import com.example.wechat.util.HttpRequest;
 import com.example.wechat.util.MessageUtil;
 
@@ -34,7 +35,15 @@ public class EventDispatcher {
                 String info = HttpRequest.getUserInfo(openid);
                 Map maps = (Map) JSON.parse(info);
                 String nickname = (String) maps.get("nickname");
+
+                String info2 = HttpRequest.getUserInfo(map.get("FromUserName"));
+                Map maps2 = (Map) JSON.parse(info2);
+                String nickname2 = (String) maps2.get("nickname");
+
                 txtmsg.setContent("welcome ！ - 你成功通过扫描 "+nickname+" 的二维码进行的关注");
+
+                //告诉分享者谁关注了
+                SendMessageService.sendCustomerTextMsg(Config.ACCESS_TOKEN,nickname2+" 通过你分享的二维码进行了关注",openid);
             }else{
                 txtmsg.setContent("welcome ！");
             }

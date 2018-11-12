@@ -3,6 +3,7 @@ package com.example.wechat.service;
 import com.alibaba.fastjson.JSON;
 import com.example.wechat.util.DownLoadImage;
 import com.example.wechat.util.HttpRequest;
+import com.example.wechat.util.JsonTool;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jdk.nashorn.internal.parser.JSONParser;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class QrCodeService {
+    public static final String pre = "fission_";
 
     public static void sendQrcodeToUser(String accessToken, String opendId){
         String ticket = createQrCode(accessToken, opendId);
@@ -19,9 +21,11 @@ public class QrCodeService {
             String url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token="+accessToken+"&type=image";
 
             try {
-                String result = HttpRequest.postImage(url, new File("qrcodeimages/fission_"+opendId+".png"));
-                Map maps = (Map)JSON.parse(result);
-                String mediaId = (String) maps.get("media_id");
+                String result = HttpRequest.postImage(url, new File("qrcodeimages/"+pre+opendId+".png"));
+//                Map maps = (Map)JSON.parse(result);
+//                String mediaId = (String) maps.get("media_id");
+
+                String mediaId =(String)JsonTool.json2Map(result).get("media_id");
 
                 if(mediaId!=null){
                     System.out.println("mediaId = "+mediaId);
@@ -38,8 +42,10 @@ public class QrCodeService {
         String param = "{\"expire_seconds\":604800,\"action_name\":\"QR_STR_SCENE\",\"action_info\":{\"scene\":{\"scene_str\":\""+opendId+"\"}}}";
 
         String result = HttpRequest.sendPost(baseUrl,param);
-        Map maps = (Map)JSON.parse(result);
-        String ticket = (String) maps.get("ticket");
+//        Map maps = (Map)JSON.parse(result);
+//        String ticket = (String) maps.get("ticket");
+
+        String ticket = (String) JsonTool.json2Map(result).get("ticket");
 
         return ticket;
     }
@@ -47,7 +53,7 @@ public class QrCodeService {
     private static boolean downLoadQrcode(String ticket, String filename){
         boolean flag = true;
         String url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+ticket;
-        String pre = "fission_";
+
         try {
             DownLoadImage.download(url, pre+filename);
         } catch (Exception e) {
