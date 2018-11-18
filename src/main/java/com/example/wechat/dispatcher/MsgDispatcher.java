@@ -33,7 +33,13 @@ public class MsgDispatcher {
                 QrCodeService.sendQrcodeToUser(Config.ACCESS_TOKEN, fromUserName);
             }
             if(content.equals("你好")){
-                sendCustomerMsg(map.get("FromUserName"),"你好!");
+                sendCustomerMsg(fromUserName,"你好!");
+            }
+
+            if(content.equals("模板")){
+                //需要自己构造param
+
+                SendMessageService.sendTempMsg(Config.ACCESS_TOKEN, "");
             }
 
         }

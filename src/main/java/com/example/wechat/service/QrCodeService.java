@@ -1,15 +1,11 @@
 package com.example.wechat.service;
 
-import com.alibaba.fastjson.JSON;
+import com.example.wechat.util.Config;
 import com.example.wechat.util.DownLoadImage;
 import com.example.wechat.util.HttpRequest;
 import com.example.wechat.util.JsonTool;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.nashorn.internal.parser.JSONParser;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 public class QrCodeService {
     public static final String pre = "fission_";
@@ -18,7 +14,7 @@ public class QrCodeService {
         String ticket = createQrCode(accessToken, opendId);
         boolean isDownLoad = downLoadQrcode(ticket, opendId);
         if(isDownLoad){
-            String url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token="+accessToken+"&type=image";
+            String url = Config.UPLOAD_MEDIA+"?access_token="+accessToken+"&type=image";
 
             try {
                 String result = HttpRequest.postImage(url, new File("qrcodeimages/"+pre+opendId+".png"));
@@ -38,7 +34,7 @@ public class QrCodeService {
     }
 
     private static String createQrCode(String accessToken, String opendId){
-        String baseUrl="https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+accessToken;
+        String baseUrl=Config.QRCODE_CREATE+"?access_token="+accessToken;
         String param = "{\"expire_seconds\":604800,\"action_name\":\"QR_STR_SCENE\",\"action_info\":{\"scene\":{\"scene_str\":\""+opendId+"\"}}}";
 
         String result = HttpRequest.sendPost(baseUrl,param);
@@ -52,7 +48,7 @@ public class QrCodeService {
 
     private static boolean downLoadQrcode(String ticket, String filename){
         boolean flag = true;
-        String url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+ticket;
+        String url = Config.QRCODE_SHOW+"?ticket="+ticket;
 
         try {
             DownLoadImage.download(url, pre+filename);

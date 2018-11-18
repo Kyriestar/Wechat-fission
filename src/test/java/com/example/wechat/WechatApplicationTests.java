@@ -1,10 +1,14 @@
 package com.example.wechat;
 
 import com.alibaba.fastjson.JSON;
+import com.example.wechat.msg.TempMessage;
+import com.example.wechat.msg.TempMessageData;
 import com.example.wechat.service.QrCodeService;
+import com.example.wechat.service.SendMessageService;
 import com.example.wechat.util.Config;
 import com.example.wechat.util.DownLoadImage;
 import com.example.wechat.util.HttpRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -14,7 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -78,7 +84,7 @@ public class WechatApplicationTests {
     }
 
     @Test
-    public void test1() throws IOException {
+    public void testObjectMapper() throws IOException {
 //        String GENERIC_BINDING = "{\"key1\":\"str1\",\"key2\":\"str2\"}";
         ObjectMapper mapper = new ObjectMapper();
 //        Map<String, String> map1 = mapper.readValue(GENERIC_BINDING, new TypeReference<HashMap<String, String>>() {
@@ -105,5 +111,27 @@ public class WechatApplicationTests {
         userData.put("verified", Boolean.FALSE);
         userData.put("userImage", "Rm9vYmFyIQ==");
         System.out.println(mapper.writeValueAsString(userData));
+    }
+
+    @Test
+    public void testSendTempMsg() throws JsonProcessingException {
+        TempMessageData data = new TempMessageData();
+        data.setValue("恭喜你成功邀请了一人");
+        data.setColor("#173177");
+        TempMessageData data2 = new TempMessageData();
+        data2.setValue("xxxx");
+        data2.setColor("#173177");
+        Map<String, TempMessageData> map = new HashMap<String, TempMessageData>();
+        map.put("first", data);
+        map.put("keyword1", data2);
+
+        TempMessage tempMessage = new TempMessage();
+        tempMessage.setTouser("o1BWk0utKViGg5DEPeMgk-OrFrOA");
+        tempMessage.setTemplate_id("vskiulW0isAPyyS9i49-RhzRq91k_rNjF-KvEOqoTwY");
+        tempMessage.setData(map);
+        ObjectMapper mapper = new ObjectMapper();
+        String param = mapper.writeValueAsString(tempMessage);
+        SendMessageService.sendTempMsg(Config.ACCESS_TOKEN,param);
+
     }
 }

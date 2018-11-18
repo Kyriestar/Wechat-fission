@@ -6,6 +6,7 @@ import com.example.wechat.service.SendMessageService;
 import com.example.wechat.util.Config;
 import com.example.wechat.util.HttpRequest;
 import com.example.wechat.util.MessageUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class EventDispatcher {
-    public static String processEvent(Map<String, String> map, HttpServletResponse response) {
+    public static String processEvent(Map<String, String> map, HttpServletResponse response) throws JsonProcessingException {
         if (map.get("Event").equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) { //关注事件
             System.out.println("==============这是关注事件！");
             TextMessage txtmsg = new TextMessage();
@@ -43,7 +44,9 @@ public class EventDispatcher {
                 txtmsg.setContent("welcome ！ - 你成功通过扫描 "+nickname+" 的二维码进行的关注");
 
                 //告诉分享者谁关注了
-                SendMessageService.sendCustomerTextMsg(Config.ACCESS_TOKEN,nickname2+" 通过你分享的二维码进行了关注",openid);
+                String tempMsgId = "vskiulW0isAPyyS9i49-RhzRq91k_rNjF-KvEOqoTwY";
+                SendMessageService.sendFissionTempMsg(Config.ACCESS_TOKEN, "vskiulW0isAPyyS9i49-RhzRq91k_rNjF-KvEOqoTwY",openid, nickname2);
+//                SendMessageService.sendCustomerTextMsg(Config.ACCESS_TOKEN,nickname2+" 通过你分享的二维码进行了关注",openid);
             }else{
                 txtmsg.setContent("welcome ！");
             }
